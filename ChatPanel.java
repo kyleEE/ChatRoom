@@ -145,7 +145,8 @@ public class ChatPanel extends JPanel implements ActionListener{
 
         
       }
-      appendIcon(button_choose);
+      //appendIcon(button_choose);
+      cGui.sendIcon(button_choose);
       //frameicon.setVisible(false);
       frameicon.dispose();
    }
