@@ -1,35 +1,6 @@
-import java.awt.EventQueue;
+import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-import javax.swing.DropMode;
-import javax.swing.JRadioButton;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.awt.Label;
-import javax.swing.JTextPane;
-import java.awt.Color;
-import java.awt.SystemColor;
-import java.awt.Button;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.SwingConstants;
-import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.*;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import java.awt.event.ItemListener;
 
 public class ClientGUI implements ActionListener{
 
