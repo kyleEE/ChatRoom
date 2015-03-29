@@ -135,6 +135,10 @@ public class ClientGUI implements ActionListener{
       client.sendText(text);
       return true;
    }
+   public boolean sendIcon(int ind){
+      client.sendIcon(ind);
+      return true;
+   }
 
    /* Public function for Log Panel */
    public boolean tryLogin(String id, String ip, int port){
