@@ -22,6 +22,7 @@ public class TypePanel extends JPanel implements ActionListener{
    private String receiver;
    private int iconIndex;
 
+
    public TypePanel(ClientGUI gui){
       setLayout(new BorderLayout(5,5));
       cGui=gui;
