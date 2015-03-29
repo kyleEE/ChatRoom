@@ -27,10 +27,24 @@ public class ChatPanel extends JPanel implements ActionListener{
    private JButton button_icon10;
    private JButton button_icon11;
 
+
    public ChatPanel(ClientGUI gui){
       setLayout(null);
       cGui=gui;
       initialize();
+
+       EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            try {
+
+               frameicon = new JFrame();
+            } 
+            catch (Exception e) {
+               e.printStackTrace();              
+            }
+
+         }
+      });
    }
    
    private void initialize(){
@@ -132,7 +146,10 @@ public class ChatPanel extends JPanel implements ActionListener{
         
       }
       appendIcon(button_choose);
+      //frameicon.setVisible(false);
+      frameicon.dispose();
    }
+
 
    public void appendText(String msg){
       try{
@@ -158,23 +175,10 @@ public class ChatPanel extends JPanel implements ActionListener{
    }
 
     public void iconbar(){
-
-     EventQueue.invokeLater(new Runnable() {
-         public void run() {
-            try {
-
-               frameicon = new JFrame();
-            } 
-            catch (Exception e) {
-               e.printStackTrace();              
-            }
-
-         }
-      });
                
         frameicon.getContentPane().setBackground(Color.lightGray);
         frameicon.setVisible(true);
-        frameicon.setBounds(100, 100, 600, 400); // x, y, width, height
+        frameicon.setBounds(750, 50, 600, 700); // x, y, width, height
         frameicon.getContentPane().setLayout(new FlowLayout());
         button_icon0=new JButton(new ImageIcon("QIcon/0.png"));
         frameicon.getContentPane().add(button_icon0);
