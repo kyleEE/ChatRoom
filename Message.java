@@ -13,7 +13,7 @@ public class Message implements Serializable{
    private Vector<String> userList;
    private byte[] file;
    private Vector<String> blockList;
-   
+
    public Message(enum_MessageType p_type, String p_sender, String p_message){
       type=p_type;
       sender=p_sender;
@@ -48,18 +48,18 @@ public class Message implements Serializable{
    public void setPrivate(){ broadcast=false;}
    public void setUserList(Vector<String> v){ userList=v;}
    public void setBlockList(Vector<String> v){ blockList=v;} 
-   public void setFileName(String p_fileName){ fileName=p_fileName;}
+   void setFileName(String p_fileName){ fileName=p_fileName;}
 //   void setByteLength(int size){byteSize=size;}
    /* Getter */
    enum_MessageType getType(){ return type;}
-   public String getSender(){ return sender;}
-   public String getReceiver(){ return receiver;}
-   public String getMessage(){ return message;}
-   public String getFileName(){ return fileName;}
-   public int getRoom(){ return room; }
-   public int getIconIndex(){ return iconIndex;}
-   public boolean getBroadcast(){ return broadcast;}
-   public Vector<String> getUserList(){ return userList;}
-   public byte[] getFile(){ return file;}
+   String getSender(){ return sender;}
+   String getReceiver(){ return receiver;}
+   String getMessage(){ return message;}
+   String getFileName(){ return fileName;}
+   int getRoom(){ return room; }
+   int getIconIndex(){ return iconIndex;}
+   boolean getBroadcast(){ return broadcast;}
+   Vector<String> getUserList(){ return userList;}
+   byte[] getFile(){ return file;}
 //   int getByteLength() { return byteSize;}
 }

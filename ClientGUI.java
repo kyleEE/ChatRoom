@@ -85,10 +85,6 @@ public class ClientGUI implements ActionListener{
       return ID;
    }
    
-   public int getChangeRoom(){
-      return centerPanel.getchangeRoom();
-   }
-
    public String getReceiver(){
       return client.getReceiver();
    }
@@ -98,15 +94,15 @@ public class ClientGUI implements ActionListener{
    }
 
    /* Public function for Client */
-   public void appendText(int room, String msg, String type){
-      centerPanel.appendText(room,msg,type);
+   public void appendText(String msg, String type){
+      centerPanel.appendText(msg,type);
    }
 
-   public boolean appendIcon(int room,int i){
-      centerPanel.appendIcon(room,i);
+   public boolean appendIcon(int i){
+      centerPanel.appendIcon(i);
       return true;
    }
-/*   
+   /*
    public boolean appendImage(){
       centerPanel.appendImage();
       return true;
@@ -116,7 +112,8 @@ public class ClientGUI implements ActionListener{
       centerPanel.appendFile();
       return true;
    }
-*/
+   */
+
    /* Public function for Type Panel */
    public void setPublic(){ client.setBroadcast(true);}
    public void setPrivate(){ client.setBroadcast(false);}
@@ -130,7 +127,7 @@ public class ClientGUI implements ActionListener{
 
    public void renewRoom(int r){
       eastPanel.renewRoom(r); 
-     // centerPanel.roomcheck(r);  
+      centerPanel.roomcheck(r);  
       centerPanel.changeRoom(r);
    }
 
@@ -150,20 +147,18 @@ public class ClientGUI implements ActionListener{
       client.sendRoom(room);
       return true;
    }
-   public void setClientRoom(int r){
-      client.setRoom(r);
-   }
+
    public boolean sendText(String text){
-      //int k=centerPanel.getchangeRoom();
-      //centerPanel.changeRoom(k);
-      //client.sendRoom(k);
+      int k=centerPanel.getchangeRoom();
+      centerPanel.changeRoom(k);
+      client.sendRoom(k);
       client.sendText(text);
       return true;
    }
    public boolean sendIcon(int ind){
-      //int k=centerPanel.getchangeRoom();
-      //centerPanel.changeRoom(k);
-      //client.sendRoom(k);
+      int k=centerPanel.getchangeRoom();
+      centerPanel.changeRoom(k);
+      client.sendRoom(k);
       client.sendIcon(ind);
       return true;
    }

@@ -72,7 +72,6 @@ public class ListPanel extends JPanel implements ActionListener{
                {
                   String target= userList.get(i).getText().toString();
                   System.out.println(target);
-                  cGui.setClientRoom(room);
                   cGui.setReceiver(target);
                   cGui.sendRoom(room); 
                }      

@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
-public class ChatPanel extends JPanel implements ChangeListener{
+public class ChatPanel extends JPanel {
    private ClientGUI cGui;
    private JTextPane textPane1;
    private SimpleAttributeSet attrset1;
@@ -134,7 +134,7 @@ public class ChatPanel extends JPanel implements ChangeListener{
       scroll_5.setName("5");  
         
       tabPane= new JTabbedPane();
-      tabPane.addChangeListener(this);
+      //tabPane.addChangeListener(this);
 
                   
       tabPane.setBounds(30, 10, 500, 500);
@@ -167,25 +167,20 @@ public class ChatPanel extends JPanel implements ChangeListener{
    }
 
    public void addRoom(int i){
-      if(i==1){
-         tabPane.addTab("chatroom1",scroll_1);
-      } 
+   if (i==1&&no1!=2){tabPane.addTab("chatroom1",scroll_1);
+              no1=2; } 
 
-      if(i==2){
-         tabPane.addTab("chatroom2",scroll_2);
-      }
+   if (i==2&&no2!=2){tabPane.addTab("chatroom2",scroll_2);
+              no2=2;}
   
-      if(i==3){
-         tabPane.addTab("chatroom3",scroll_3);
-      }
+   if (i==3&&no3!=2){tabPane.addTab("chatroom3",scroll_3);
+             no3=2;}
    
-      if(i==4){
-         tabPane.addTab("chatroom4",scroll_4);
-      }
+   if (i==4&&no4!=2){tabPane.addTab("chatroom4",scroll_4);
+             no4=2;}
     
-      if(i==5){
-         tabPane.addTab("chatroom5",scroll_5);
-      }
+   if (i==5&&no5!=2){tabPane.addTab("chatroom5",scroll_5);
+             no5=2;}
    }
    
    public void changeRoom(int i){
@@ -193,32 +188,32 @@ public class ChatPanel extends JPanel implements ChangeListener{
    }
    
    public int getchangeRoom(){
-      return useroom_user;
+      return useroom;
    }
 
-   public void appendText(int room, String msg,String type){
+   public void appendText(String msg,String type){
       try{
-         if(room==1){
+         if(useroom==1){
          StyledDocument doc=textPane1.getStyledDocument();
          doc.insertString(doc.getLength(), msg+"\n" , doc.getStyle(type));
          textPane1.setCaretPosition(textPane1.getDocument().getLength());
          }
-         if(room==2){
+         if(useroom==2){
          StyledDocument doc2=textPane2.getStyledDocument();
          doc2.insertString(doc2.getLength(), msg+"\n" , doc2.getStyle(type));
          textPane2.setCaretPosition(textPane2.getDocument().getLength());
          }
-         if(room==3){
+         if(useroom==3){
          StyledDocument doc3=textPane3.getStyledDocument();
          doc3.insertString(doc3.getLength(), msg+"\n" , doc3.getStyle(type));
          textPane3.setCaretPosition(textPane3.getDocument().getLength());
          }
-         if(room==4){
+         if(useroom==4){
          StyledDocument doc4=textPane4.getStyledDocument();
          doc4.insertString(doc4.getLength(), msg+"\n" , doc4.getStyle(type));
          textPane4.setCaretPosition(textPane4.getDocument().getLength());
          }
-         if(room==5){
+         if(useroom==5){
          StyledDocument doc5=textPane5.getStyledDocument();
          doc5.insertString(doc5.getLength(), msg+"\n" , doc5.getStyle(type));
          textPane5.setCaretPosition(textPane5.getDocument().getLength());
@@ -230,29 +225,29 @@ public class ChatPanel extends JPanel implements ChangeListener{
       }
    }
 
-   public void appendIcon(int room,int i){
+   public void appendIcon(int i){
       try{
-         if(room==1){
+         if(useroom==1){
             textPane1.setCaretPosition(textPane1.getDocument().getLength());
             StyledDocument doc = textPane1.getStyledDocument();
             doc.insertString(doc.getLength(), "\n",doc.getStyle("icon"+i));
          }
-         if(room==2){
+         if(useroom==2){
             textPane2.setCaretPosition(textPane2.getDocument().getLength());
             StyledDocument doc2 = textPane2.getStyledDocument();
             doc2.insertString(doc2.getLength(), "\n",doc2.getStyle("icon"+i));
          }
-         if(room==3){
+         if(useroom==3){
             textPane3.setCaretPosition(textPane3.getDocument().getLength());
             StyledDocument doc3 = textPane3.getStyledDocument();
             doc3.insertString(doc3.getLength(), "\n",doc3.getStyle("icon"+i));
          }
-         if(room==4){
+         if(useroom==4){
             textPane4.setCaretPosition(textPane4.getDocument().getLength());
             StyledDocument doc4 = textPane4.getStyledDocument();
             doc4.insertString(doc4.getLength(), "\n",doc4.getStyle("icon"+i));
          }
-         if(room==5){
+         if(useroom==5){
             textPane5.setCaretPosition(textPane5.getDocument().getLength());
             StyledDocument doc5 = textPane5.getStyledDocument();   
             doc5.insertString(doc5.getLength(), "\n",doc5.getStyle("icon"+i));       
@@ -288,11 +283,9 @@ public class ChatPanel extends JPanel implements ChangeListener{
 */
  public void stateChanged(ChangeEvent e){
      Component c= tabPane.getSelectedComponent();
-     String tab = c.getName();    
+     String tab = c.getName();
      int tab1 =Integer.parseInt(tab);
      useroom_user=tab1;
-
-    System.out.println(c.getName());
 }
 
 
@@ -353,12 +346,13 @@ public class ChatPanel extends JPanel implements ChangeListener{
       StyleConstants.setComponent(s, button);
       */
    }
-	public void appendImage(String filePath){
+   	public void appendImage(String filePath){
 		textPane1.setCaretPosition(textPane1.getDocument().getLength());
 		textPane1.insertIcon( new ImageIcon ( filePath ) );
 		//textPane1.setCaretPosition(textPane1.getDocument().getLength());
 		StyledDocument doc = textPane1.getStyledDocument();
 		//doc.insertString(doc.getLength(), "\n",doc.getStyle("regular"));
-      appendText(1, "", "regular");
+      appendText("", "regular");
 	}
+
 }

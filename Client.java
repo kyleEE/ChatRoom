@@ -55,25 +55,26 @@ public class Client{
    public void setReceiver(String r){ receiver=r;}
    public void setRoom(int r){ room=r;}
    public void setBroadcast(boolean b){ broadcast=b;}
+   
    /* Login to the server */
    public boolean start(){
-      display(1,"<- User "+userName+" trying to login to "+server+" at port "+port+" ->","bold");
+      display("<- User "+userName+" trying to login to "+server+" at port "+port+" ->","bold");
       // new socket
       try{
          socket=new Socket(server,port);
       }
       catch(Exception ec){
-         display(1,"Error connecting to server: "+ec);
+         display("Error connecting to server: "+ec);
          return false;
       }
       String message="<- Connection accepted, welcome! ->";
-      display(1,message,"bold");
+      display(message,"bold");
       try{
          sInput=new ObjectInputStream(socket.getInputStream());
          sOutput=new ObjectOutputStream(socket.getOutputStream());
       }
       catch(IOException eIO){
-         display(1,"Error creating new I/O Streams: " + eIO);
+         display("Error creating new I/O Streams: " + eIO);
          return false;
       }
       new ListenFromServer().start();
@@ -81,7 +82,7 @@ public class Client{
          sOutput.writeObject(userName);
       }
       catch(IOException eIO){
-         display(1,"Error doing login: " + eIO);
+         display("Error doing login: " + eIO);
          disconnect();
          return false;
       }
@@ -122,7 +123,7 @@ public class Client{
       sendMessage(msg);
       }
       catch(IOException eIO){
-        System.out.println("Error sending image: " + eIO);
+        display("Error sending image: " + eIO);
       }
    }
    
@@ -133,7 +134,7 @@ public class Client{
       sendMessage(msg);
 	  }
       catch(IOException eIO){
-         System.out.println("Error sending file: " + eIO);
+        display("Error sending file: " + eIO);
       }
    }
 
@@ -141,28 +142,27 @@ public class Client{
    public void sendMessage(Message msg){
       if(!broadcast) msg.setPrivate();
       msg.setReceiver(receiver);
-      msg.setRoom(cGUI.getChangeRoom());
       try{
          sOutput.writeObject(msg);
       }
       catch(IOException e){
-         System.out.println("Error writing to server" +  e);
+         display("Error writing to server" +  e);
       }
    }
    /* Display text in command line or GUI */
-   private void display(int room, String msg){
+   private void display(String msg){
       String type="regular";
       if(cGUI==null)
          System.out.println(msg);
       else{
-         cGUI.appendText(room, msg,type);
+         cGUI.appendText(msg,type);
       }
    }
-   private void display(int room, String msg, String type){
+   private void display(String msg, String type){
       if(cGUI==null)
          System.out.println(msg);
       else{
-         cGUI.appendText(room, msg, type);
+         cGUI.appendText(msg,type);
       }
    }
 
@@ -198,16 +198,16 @@ public class Client{
       int p_room=msg.getRoom();
       boolean broadcast=msg.getBroadcast();
       int iconIndex=msg.getIconIndex();
-      String text;
+      String text="";
       // string type
       String textType="regular";
       if(sender.equals("SERVER")) textType="bold";
-      // User Icon
-      // header
-      if( !receiver.equals("All") && !receiver.equals("") ) text=sender+" --> "+receiver+": ";
-      else text=sender+": ";
       // private message
       if(!broadcast && !userName.equals(receiver) && !userName.equals(sender) ) return false;
+      if(!broadcast) text=" [PRIVATE] ";
+      // header
+      if( !receiver.equals("All") && !receiver.equals("") ) text=text+sender+" --> "+receiver+": ";
+      else text=text+sender+": ";
       // if console mode print the message and add back the prompt
       if(cGUI == null) {
          System.out.println(sender+": "+msg.getMessage());
@@ -221,21 +221,18 @@ public class Client{
             case ANNOUNCE:
             case TEXT:
                text=text+message;
-               display(p_room, text,textType); 
+               display(text,textType); 
                break;
             case ICON:
-               display(p_room, text,textType);
-               cGUI.appendIcon(p_room,iconIndex); 
+               display(text,textType);
+               cGUI.appendIcon(iconIndex); 
                break;
             case LIST:
                Vector<String> list=msg.getUserList();
                cGUI.setUserList( list );
                break;
             case CREATROOM:
-               if( !sender.equals(userName) && receiver.equals(userName) ){
-                  cGUI.setRoom(p_room);
-                  System.out.println("Receive CREATROOM: "+p_room);
-               }
+               if( !sender.equals(userName) && receiver.equals(userName) ) cGUI.setRoom(p_room);
                break; 
             case IMAGE:
                try{
@@ -246,12 +243,13 @@ public class Client{
                     FileOutputStream fos = new FileOutputStream(filePath);
                     fos.write(msg.getFile());
                     fos.close();
-                    display(p_room, "You have a image:"+msg.getFileName(),"italic");
-					     cGUI.appendImage(filePath);
+                    display("You have a image:"+msg.getFileName(),"italic");
+					cGUI.appendImage(filePath);
                }
+//               cGUI.appendImage();
                }
                catch(IOException eIO){
-               display(p_room,"Error getting a image" +  eIO);
+               display("Error getting a image" +  eIO);
                }
                break;
             case FILE:
@@ -263,14 +261,15 @@ public class Client{
                     FileOutputStream fos2 = new FileOutputStream(filePath2);
                     fos2.write(msg.getFile());
                     fos2.close();
-                    display(p_room,"You have a file:"+msg.getFileName(),"italic");
+                    display("You have a file:"+msg.getFileName(),"regular");
                 }
                }
                catch(IOException eIO){
-               display(p_room,"Error getting a file" +  eIO);
+               display("Error getting a file" +  eIO);
                }
                break;
 			default:
+			   display("Default","regular");
 			   break;
          }
       }
@@ -286,7 +285,7 @@ public class Client{
                handleMessage(msg);
             }
             catch(IOException e){
-               System.out.println("Server has close the connection: " + e);
+               display("Server has close the connection: " + e,"bold");
                if(cGUI != null){}
                break;
             }

@@ -164,7 +164,7 @@ public class TypePanel extends JPanel implements ActionListener{
       button_sendMsg.addActionListener(this);
       centerContainer.add(button_sendMsg);
 
-       /*Room number */
+      /* Room number */
       textField_room = new JTextField();
       textField_room.setColumns(30);
       textField_room.setHorizontalAlignment(JTextField.LEFT);
@@ -180,7 +180,7 @@ public class TypePanel extends JPanel implements ActionListener{
       centerContainer.add(button_room);
       
 
-      
+      /* */
       this.add(northContainer, BorderLayout.NORTH);
       this.add(centerContainer, BorderLayout.CENTER);
    }
@@ -202,7 +202,7 @@ public class TypePanel extends JPanel implements ActionListener{
          case "Room"  : 
             String textroom = textField_room.getText().toString();
             int textroom1 =Integer.parseInt(textroom);
-            cGui.setClientRoom(textroom1); 
+            cGui.setRoom(textroom1); 
             break;
          case "QIcon"  : iconbar(); break;
          case "Public" : cGui.setPublic();  break;
