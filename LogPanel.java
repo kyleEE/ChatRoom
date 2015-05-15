@@ -1,10 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.filechooser.*;
+import java.io.*;
+import javax.imageio.*;
 
 public class LogPanel extends JPanel implements ActionListener{
-   //private ClientGUI cGUI;
    private JLabel label_userIcon;
    private JTextField textField_ID;
    private JTextField textField_IP;
@@ -14,18 +17,25 @@ public class LogPanel extends JPanel implements ActionListener{
    private JLabel label_PORT;
    private JButton button_login;
    private JButton button_logout;
+   private ClientGUI cGUI;
    private boolean isIn; // wether the user is logged in now
    private String ID;
    private String IP;
-   private String PORT;
+   private int PORT;
+   private String userIconPath;
 
-   public LogPanel(){
+   public LogPanel(ClientGUI gui){
       setLayout(new FlowLayout(FlowLayout.LEFT));
       //setPreferredSize(new Dimension(400,150));
-      //if(c==null) cGUI=null;
-      //else cGUI=c;
+      cGUI=gui;
       isIn=false;
       initialize();
+      /* User input ID */  
+      String IDinput=JOptionPane.showInputDialog("Please input your ID:","");
+      if( !IDinput.equals("") ){
+         ID=IDinput;
+         textField_ID.setText(ID);
+      }
    }
 
    private void initialize(){
@@ -39,9 +49,39 @@ public class LogPanel extends JPanel implements ActionListener{
 
       /* User icon */
       JLabel label_userIcon = new JLabel("");
-      label_userIcon.setIcon(new ImageIcon("GUIicon/circus_80_80.png"));
+      int i=1;
+      label_userIcon.setIcon(new ImageIcon("QIcon/"+i+".png"));
       label_userIcon.setBounds(30, 30, 80, 80);
+      userIconPath="";
+      label_userIcon.addMouseListener(new MouseAdapter()  
+      {  
+         public void mouseClicked(MouseEvent e)  
+         {
+            JFileChooser jfc= new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(null, "jpg", "gif", "png");
+            jfc.setFileFilter(filter);
+            //int returnVal = chooser.showOpenDialog(parent);
+            int returnVal = jfc.showDialog(jfc, "Choose an image file");
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+               userIconPath= jfc.getSelectedFile().getAbsolutePath();
+               //cGUI.appendText(userIconPath,"bold");
+               BufferedImage image = null;
+               try
+               {
+                  image = ImageIO.read(new File(userIconPath));
+               }
+               catch (Exception err)
+               {
+                  err.printStackTrace();
+                  System.exit(1);
+               }
+               ImageIcon imageIcon = new ImageIcon(image);
+//               final label_userIcon.setIcon(imageIcon);
+            }
+         }      
+      }); 
       iconPanel.add(label_userIcon);
+
       
       /* ID field */
       label_ID = new JLabel("ID");
@@ -57,7 +97,7 @@ public class LogPanel extends JPanel implements ActionListener{
       label_IP.setBounds(10, 57, 40, 25);
       infoPanel.add(label_IP);
       
-      textField_IP = new JTextField("140.112.18.202",15);
+      textField_IP = new JTextField("140.112.18.203",15);
       textField_IP.setBounds(55, 57, 200, 25);
       infoPanel.add(textField_IP);
 
@@ -66,7 +106,6 @@ public class LogPanel extends JPanel implements ActionListener{
       label_PORT.setBounds(10, 84, 40, 25);
       infoPanel.add(label_PORT);
 
-      //textField_PORT = new JTextField(4);
       textField_PORT=new JFormattedTextField(createFormatter("####"));
       textField_PORT.setBounds(55, 84, 200, 25);
       textField_PORT.setText("5678");
@@ -109,16 +148,23 @@ public class LogPanel extends JPanel implements ActionListener{
       switch(command){
          case "logIn":
             if( getInfo() ){
-               if( tryLogin() ) modifyButtonState(true);
+               if( cGUI.tryLogin(ID,IP,PORT) ) modifyButtonState(true);
             }
             break;
          case "logOut":
-            if( tryLogout() ) modifyButtonState(false);
+            int confirm=JOptionPane.showConfirmDialog(null,"Are you sure to leave the chatroom?","Confirm",JOptionPane.YES_NO_OPTION);
+            if(confirm==JOptionPane.YES_OPTION){
+               if( cGUI.tryLogout() ) modifyButtonState(false);
+            }
             break;
       }
    }
 
    private boolean getInfo(){
+      ID=textField_ID.getText().toString();
+      IP=textField_IP.getText().toString();
+      String str_PORT=textField_PORT.getText().toString();
+      PORT=Integer.parseInt(str_PORT);
       return true;
    }
 
@@ -130,11 +176,4 @@ public class LogPanel extends JPanel implements ActionListener{
       textField_PORT.setEditable(!isLogin);
    }
 
-   private boolean tryLogin(){
-      return true;
-   }
-
-   private boolean tryLogout(){
-      return true;
-   }
 }

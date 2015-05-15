@@ -1,4 +1,33 @@
-README
-Project Name: Chat Room
-NMLab
-123
+-------------------------
+Compiling Information
+-------------------------
+If you are using Windows command line environment:
+1. type "clean" to first clean the unwanted .class file.
+2. type "compile" to generate the program and needed files. 
+
+If you are using OSX command line environment:
+1. type "make clean" to first clean the unwanted .class file.
+2. type "make" to generate the program and needed files.
+
+----------------------
+Command Line Arguments
+----------------------
+To run the server program, change the directory to ChatRoom, and type
+./Server
+and the program will automatically opens  port 5678 waiting for client to establish TCP connection.
+
+To run the client program, chnage the directory to ChatRoom, and type
+./ClientGUI
+and a GUI interface will show up.
+You can set your username, server IP and port based on the server you want to connect.
+
+-------------------------
+Design Decisions & Issues
+-------------------------
+1. Client Class Hierachy:
+Client---ClientGUI---LogPanel, ChatPanel, TypePanel, ListPanel
+- class Client handles the communications to server.
+- class ClientGUI manages four panels, pass the user input to class Client and messages from server to ChatPanel to display.
+
+2. Server's job
+Server will broadcast every message it receives, deciding wether or not the message should be display is the client's job.

@@ -24,7 +24,7 @@ public class Server{
       Server server=new Server();
       server.start();
    }
-	
+   
    public void start(){
       try{
          serverSocket=new ServerSocket(port);
@@ -35,6 +35,10 @@ public class Server{
             ClientThread ct=new ClientThread(socket);
             clientThreadVec.add(ct);
             ct.start();
+            display(ct.getUsername()+" just connected.");
+            sendUserList();
+            broadcast(new Message(enum_MessageType.ANNOUNCE,"SERVER",
+                      ct.getUsername()+" just entered!"));
          }
          try{
             serverSocket.close();
@@ -66,17 +70,17 @@ public class Server{
    private void stop(){
       try{
          serverSocket.close();
-	 for(int i=0; i<clientThreadVec.size(); i++){
-	    ClientThread ct=clientThreadVec.get(i);
-	    try{
-	       ct.sInput.close();
-	       ct.sOutput.close();
-	       ct.socket.close();
-	    }
-	    catch(IOException ioE){
-	       display("Exception closing ClientThread: "+ioE);
-	    }
-	 }
+    for(int i=0; i<clientThreadVec.size(); i++){
+       ClientThread ct=clientThreadVec.get(i);
+       try{
+          ct.sInput.close();
+          ct.sOutput.close();
+          ct.socket.close();
+       }
+       catch(IOException ioE){
+          display("Exception closing ClientThread: "+ioE);
+       }
+    }
       }
       catch(Exception e){
          display("Exception closing ServerSocket: "+e);
@@ -87,10 +91,11 @@ public class Server{
    private synchronized boolean kickUser(int id){
       for(int i=0; i<clientThreadVec.size(); i++){
          ClientThread ct=clientThreadVec.get(i);
-	 if(ct.id==id){
-	    clientThreadVec.remove(i);
-	    return true;
-	 }
+         if(ct.id==id){
+            clientThreadVec.remove(i);
+            sendUserList();
+            return true;
+         }
       }
       return false;
    }
@@ -98,18 +103,35 @@ public class Server{
    private synchronized void broadcast(Message msg){
       for(int i=0; i<clientThreadVec.size(); i++){
          ClientThread ct=clientThreadVec.get(i);
-         if(msg.getSender().equals(ct.getUsername())) continue;
          if(!ct.writeMessage(msg)){
             clientThreadVec.remove(i);
+            broadcast(new Message(enum_MessageType.ANNOUNCE,"SERVER",
+                            ct.getUsername()+" just left!"));
+            sendUserList();
             display("Disconnect Client "+ct.username+" removed from list.");
          }
       }
+   }
+
+   private synchronized void sendUserList(){
+      Vector<String> userList=new Vector<String>();
+      userList.clear();
+      userList.add("All");
+      for(int i=0; i<clientThreadVec.size(); i++){
+         ClientThread ct=clientThreadVec.get(i);
+         userList.add( ct.getUsername() );
+      }
+      Message listMsg=new Message(enum_MessageType.LIST,"SERVER");
+      listMsg.setUserList(userList);
+      broadcast(listMsg);
    }
 
    class ClientThread extends Thread{
       private Socket socket;
       private ObjectInputStream sInput;
       private ObjectOutputStream sOutput;
+	   private FileInputStream fInput;
+	   private FileOutputStream fOutput;
       private int id;
       private String username;
       private String time;
@@ -120,22 +142,23 @@ public class Server{
 
       /* Constructor */
       public ClientThread(Socket socket){
-	 id=num_client;
-	 num_client++;
-	 this.socket=socket;
-	 System.out.println("Thread trying to create Object I/O Streams: ");
-	 try{
-	    sOutput=new ObjectOutputStream(socket.getOutputStream());
-	    sInput=new ObjectInputStream(socket.getInputStream());
-	    username=(String)sInput.readObject();
-	    display(username+" just connected.");
-	 }
-	 catch(IOException ioE){
-	    display("Exception creating new I/O Streams: " + ioE);
-	    return;
-	 }
-	 catch(ClassNotFoundException cnfE){}
-	 time=new Date().toString()+"\n";
+         id=num_client;
+         num_client++;
+         this.socket=socket;
+         System.out.println("Thread trying to create Object I/O Streams: ");
+         try{
+            sOutput=new ObjectOutputStream(socket.getOutputStream());
+            sInput=new ObjectInputStream(socket.getInputStream());
+	//		fOutput=new FileOutputStream(socket.getOutputStream());
+	//		fInput=new FileInputStream(socket.getOutputStream());
+            username=(String)sInput.readObject();
+         }
+         catch(IOException ioE){
+            display("Exception creating new I/O Streams: " + ioE);
+            return;
+         }
+         catch(ClassNotFoundException cnfE){}
+         time=new Date().toString()+"\n";
       } // end of constructor
 
       public void run(){
@@ -153,15 +176,21 @@ public class Server{
             switch(type){
                case LOGOUT:
                   display(username+" disconnected with LOGOUT message.");
+                  broadcast(new Message(enum_MessageType.ANNOUNCE,"SERVER",
+                            username+" just left!"));
                   terminate=true;
                   break;
+               case ANNOUNCE:
+               case RENEWROOM:
                case TEXT:
                case ICON:
-               case PICTURE:
+               case CREATROOM:
+               case IMAGE:
+               case FILE:
+                  System.out.println("Receive FILE");
                   broadcast(msg);
                   break;
-               case CREATROOM:
-                  break;
+               
             } // end of switch
          } // end of while
          kickUser(id);

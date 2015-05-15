@@ -1,0 +1,9 @@
+javac enum_MessageType.java
+javac Message.java
+javac Server.java
+javac LogPanel.java
+javac ListPanel.java
+javac TypePanel.java
+javac ClientGUI.java
+javac Client.java
+javac Main.java
